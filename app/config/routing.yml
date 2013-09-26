@@ -1,0 +1,4 @@
+less_mpcu:
+    resource: "@LessMpcuBundle/Resources/config/routing.yml"
+    prefix:   /
+

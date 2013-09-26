@@ -1,0 +1,3 @@
+less_mpcu_homepage:
+    pattern:  /
+    defaults: { _controller: LessMpcuBundle:Default:index }

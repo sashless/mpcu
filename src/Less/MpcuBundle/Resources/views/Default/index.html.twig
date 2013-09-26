@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+{% block title %} Mobile Presentation Control Unit {% endblock %}
+
+
+{% block body %}
+	<div id="content"></div>
+	<div>Status: <span id="status"></span></div>
+	
+{% endblock %}
+
+{% block javascripts %}
+	{% javascripts '@LessMpcuBundle/Resources/public/js/*' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
