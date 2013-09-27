@@ -3,13 +3,16 @@
 
 
 {% block body %}
-	<div id="content"></div>
-	<div>Status: <span id="status"></span></div>
-	
+	<div id="form_create">
+		<h3>Create a Session</h3>
+		{{ form(form_create) }}
+	</div>
+	<div id="form_login">
+		<h3>Login to existing Session</h3>
+		{{ form(form_login) }}
+	</div>
 {% endblock %}
 
 {% block javascripts %}
-	{% javascripts '@LessMpcuBundle/Resources/public/js/*' %}
-		<script type="text/javascript" src="{{ asset_url }}"></script>
-	{% endjavascripts %}
+	
 {% endblock %}

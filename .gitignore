@@ -1,8 +1,12 @@
+# eclipse specific
 .project
 .metadata
 .settings/
 .buildpath
+
+# backup files
 *~
+
 # Bootstrap
 app/bootstrap*
 
@@ -16,3 +20,6 @@ web/bundles/*
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
+
+# composer
+composer.phar

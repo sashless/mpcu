@@ -4,6 +4,7 @@ namespace Less\MpcuBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 
 /**
  * SessionRepository
@@ -13,21 +14,26 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class SessionRepository extends EntityRepository
 {
-	/**
-	 * @ORM\ManyToOne(targetEntity="Session", inversedBy="Action")
-	 * @ORM\JoinColumn(name="session_id", referencedColumnName="id" 
-	 * @var unknown
-	 */
-	protected $actions;
 	
-	public function __construct(){
-		$this->actions = new ArrayCollection();
-	}
+	
 	public function createSession($name, $password){
 		$em = $this->getEntityManager();
 		$session = new Session();
 		$session->setName($name);
 		$session->setPassword($password);
 		$em->persist($session);
+	}
+	public function exists($name){
+		$qb = $this->createQueryBuilder('s');
+		$query = $qb->where('s.name = :name')
+		->setParameter('name', $name)
+		->getQuery();
+		
+		$res = $query->getResult();
+		
+		if(count($res) > 0){
+			return true;
+		}
+		return false;
 	}
 }

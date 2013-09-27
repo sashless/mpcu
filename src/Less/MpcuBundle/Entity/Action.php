@@ -44,11 +44,11 @@ class Action
 
     /**
      * 
-     * @var integer
      * 
-     * @ORM\Column(name="session_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="Session", inversedBy="actions")
+     * @ORM\JoinColumn(name="session_id", referencedColumnName="name")
      */
-	private $session_id;
+	protected $session;
 
     /**
      * Get id
@@ -129,26 +129,27 @@ class Action
         return $this->handling;
     }
     
+
     /**
-     * Set session_id
+     * Set session
      *
-     * @param integer $sessionId
+     * @param \Less\MpcuBundle\Entity\Session $session
      * @return Action
      */
-    public function setSessionId($sessionId)
+    public function setSession(\Less\MpcuBundle\Entity\Session $session)
     {
-        $this->session_id = $sessionId;
+        $this->session = $session;
     
         return $this;
     }
 
     /**
-     * Get session_id
+     * Get session
      *
-     * @return integer 
+     * @return \Less\MpcuBundle\Entity\Session 
      */
-    public function getSessionId()
+    public function getSession()
     {
-        return $this->session_id;
+        return $this->session;
     }
 }

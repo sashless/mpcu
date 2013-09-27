@@ -3,27 +3,30 @@
 namespace Less\MpcuBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Session
  *
  * @ORM\Table(name="T_Session")
  * @ORM\Entity(repositoryClass="Less\MpcuBundle\Entity\SessionRepository")
+ * 
  */
 class Session
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+	/**
+	 * @ORM\OneToMany(targetEntity="Action", mappedBy="session")
+	 * @var unknown
+	 */
+	protected $actions;
+	
+	public function __construct(){
+		$this->actions = new ArrayCollection();
+	}
 
-    /**
+	/**
      * @var string
-     *
+     * @ORM\Id
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
@@ -35,16 +38,6 @@ class Session
      */
     private $password;
 
-
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set name
@@ -90,5 +83,38 @@ class Session
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Add actions
+     *
+     * @param \Less\MpcuBundle\Entity\Action $actions
+     * @return Session
+     */
+    public function addAction(\Less\MpcuBundle\Entity\Action $actions)
+    {
+        $this->actions[] = $actions;
+    
+        return $this;
+    }
+
+    /**
+     * Remove actions
+     *
+     * @param \Less\MpcuBundle\Entity\Action $actions
+     */
+    public function removeAction(\Less\MpcuBundle\Entity\Action $actions)
+    {
+        $this->actions->removeElement($actions);
+    }
+
+    /**
+     * Get actions
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getActions()
+    {
+        return $this->actions;
     }
 }

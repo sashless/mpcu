@@ -2,6 +2,7 @@ parameters:
 #    less_mpcu.example.class: Less\MpcuBundle\Example
 
 services:
-#    less_mpcu.example:
-#        class: %less_mpcu.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+ less_mpcubundle_session:
+  class: Less\MpcuBundle\Form\SessionType
+  tags:
+   - { name: form.type }

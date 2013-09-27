@@ -13,26 +13,28 @@ use Less\MpcuBundle\LessMpcuBundle;
  */
 class ActionRepository extends EntityRepository
 {
-	public function addAction($session_id,$type, $handling ){
+	public function addAction($session,$type, $handling ){
 		$em = $this->getEntityManager();
 		$action = new Action();
 		$action->setHandling($handling);
 		$action->setType($type);
-		$action->setSessionId($session_id);
+		$action->setSession($session);
 		$now = new \DateTime('now');
 		$action->setTime($now->getTimestamp());
 		$em->persist($action);
 		$em->flush();
 	}
-	public function getNextActions($session_id, $last_action_time){
-		$em = $this->getEntityManager();
-		$query = $em->createQuery('
-				SELECT action
-				FROM LessMpcuBundle:Action action
-				WHERE action.time > :last_action_time AND action.session_id = :session_id
-				ORDER BY action.time ASC')
-				->setParameter('last_action_time', $last_action_time)
-				->setParameter('session_id', $session_id);
+	public function getNextActions($session, $last_action_time){
+		$qb = $this->createQueryBuilder('a');
+		$query = $qb
+			->where('a.session = :session AND a.time < :last_action_time')
+			->setParameter('session', $session->getName())
+			->setParameter('last_action_time', $last_action_time)
+			->orderBy('a.time', 'ASC')
+			->getQuery();
+		
 		return $query->getResult();
 	}
+	
+	
 }
