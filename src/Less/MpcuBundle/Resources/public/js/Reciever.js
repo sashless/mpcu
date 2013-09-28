@@ -1,16 +1,19 @@
 
-var reciever = {
-	fields: {'content': $('content'), 'status': $('status') },
-	ajax: {'url': 'ajax.php', 'method': 'get'},
+var Reciever = {
+	fields: {'log': $('log'), 'status': $('status') },
+	ajax: {'url': '', 'method': ''},
 	actions: new Array(),
 	request: undefined,
 	interval: undefined,
-	initTime: new Date().getTime(),
+	initTime: undefined,
 	curentAction: 0,
 	
-	init: function(){
+	init: function(config){
 		var that = this;
-		that.setupInterval(that);
+		config = JSON.parse(unescape(config));
+		this.initTime = config.initTime;
+		this.ajax = config.ajax;
+		this.setupInterval(that);
 		
 	},
 	setupInterval: function(that){
@@ -20,7 +23,7 @@ var reciever = {
 		var that = this;		
 		clearInterval(this.interval)
 		var onRequest = function(){
-			console.log("send");
+			//console.log("send");
 			that.fields.status.set('text',"waiting for action..");
 		};
 		
@@ -43,11 +46,13 @@ var reciever = {
 					},250);
 			}else{
 				if(response.length > 0){	
-					if(response[0].data){
+					var data = JSON.parse(unescape(response[0].data));
+					
+					if(data.status == 'ok'){
 						that.fields.status.set('text',"performing action!");
-						that.processResponse(JSON.parse(response[0].data));
-					}else if(response[0].data.status && response[0].data.status == 'error'){
-						that.fields.status.set('text',"error while loading! " + response[0].data.msg);
+						that.processResponse(data.actions);
+					}else if(data.status == 'error'){
+						that.fields.status.set('text',"error while loading! " + response[0].data.message);
 						that.setupInterval(that);
 					}
 				}else{
@@ -57,17 +62,17 @@ var reciever = {
 			}
 		};
 		var onError = function(error){
-			that.fields.status.set('text',"error while saving!");
+			that.fields.status.set('text',"error while ajax request!");
 		};
 		
-		var action =  { 'time': this.getLastAction() ? this.getLastAction().time : this.initTime, 'get_next':'get_next'};
+		var action =  { 'time': this.getLastAction() ? this.getLastAction().time : this.initTime};
 		
 		var req = new Request.HTML({
 			link: 'ignore',
 			timeout: 5000,
 			method: that.ajax.method,
 			url: that.ajax.url,
-			data: {'action' : action},
+			data: action,
 			onRequest: onRequest,
 			onComplete: onComplete,
 			onFailure: onFailure,
@@ -89,15 +94,24 @@ var reciever = {
 		}
 	},
 	processResponse: function(data){
-//		var date = new Date();
-		console.log("process");
+		var isClone = function(a,b){
+			for(var o in a){
+				if(a.hasOwnProperty(o) && b.hasOwnProperty(o)){
+					if(a[o] !== b[o]){
+						return false
+					}
+				}else{
+					return false;
+				}
+			}
+			return true;
+		}
 		for(var i = 0; i < data.length; i++){
-			if(reciever.actions.indexOf(data[i]) != '-1'){
+			var action = new Action(data[i]);
+			if(typeof this.actions[i] != 'undefined' && isClone(this.actions[i], action)){
 				console.log("double found");
 			}else{
-				reciever.actions.push(data[i]);
-//				date.setTime(data[i].time);
-//				console.log("saved. "+date.toString());
+				this.actions.push(action);
 			} 
 		}
 		this.setupInterval(this);
@@ -125,7 +139,7 @@ var reciever = {
 		var p = new Element('p',{
 			'html': "SwitchPage to: " + handling
 		});
-		p.inject(this.fields.content);
+		p.inject(this.fields.log);
 	},
 	zoom: function(handling){
 		/*

@@ -1,5 +1,5 @@
 
-var sender = {
+var Sender = {
 	fields: { 'container': $('touchport'), 'status': $('status') },
 	ajax: {'url': 'ajax.php', 'method': 'get'},
 	actions: new Array(),
@@ -8,8 +8,12 @@ var sender = {
 	curentPage: 0,
 	maxPage: 5,
 	
-	init: function(){
+	init: function(config){
 		var that = this;
+		config = JSON.parse(unescape(config));
+		this.ajax = config.ajax;
+		
+		// resiz to actual browser size
 		this.fields.container.set('style','position: absolute;width: '+document.width+'px; height: '+document.height+'px;')
 		this.touchport = new Hammer(this.fields.container); 
 		this.touchport.onswipe = function(event){
@@ -20,28 +24,30 @@ var sender = {
 		};
 	},
 	saveAction: function(action){
+		// save to resend again on fail
+		this.actions.push(action);
 		var that = this;		
 		var onRequest = function(){
 			that.fields.status.set('text',"saving action..");
 		};
 		var onComplete = function(response){
 			if(response.length > 0){
-				var data = JSON.parse( response[0].data);
-				if(data.status && data.status == 'saved'){
+				var data = JSON.parse( unescape(response[0].data));
+				if(data.status == 'saved' ){
 					that.fields.status.set('text',"action saved!");
 					that.removeAction(action);
-				}else if(data.status && data.status == 'error'){
-					that.fields.status.set('text',"error while saving! " + data.msg);
+				}else if(data.status == 'error'){
+					that.fields.status.set('text',"error while saving! " + data.message);
 				}
 			}else{
 				that.fields.status.set('text',"response was empty!");
 			}
 		};
-		console.log(action.time + " " + action.handling);
+		console.log(action.handling);
 		var req = new Request.HTML({
 			method: that.ajax.method,
 			url: that.ajax.url,
-			data: {'action' : action},
+			data: action,
 			onRequest: onRequest,
 			onComplete: onComplete
 			}).send();
@@ -72,16 +78,16 @@ var sender = {
 		}
 	},
 	switchPage: function(handling){
-		var action = {'time': new Date().getTime(), 'type': 'switch_page' , 'save_action': 'save_action'};
+		var page_id = 0;
+		
 		if(handling.direction == 'right'){// backward
-			action.handling = this.prevPage()
-			this.saveAction(action);
+			page_id = this.prevPage()
 		}else if(handling.direction == 'left'){
-			action.handling = this.nextPage();
-			this.saveAction(action);
+			page_id = this.nextPage();	
 		}
 		
-		this.actions.push(action);
+		var action = {'type': 'switch_page', 'handling': page_id };
+		this.saveAction(action);
 	},
 	removeAction: function(action){
 		this.actions.splice(this.actions.indexOf(action));

@@ -3,6 +3,8 @@
 namespace Less\MpcuBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * Action
@@ -47,6 +49,7 @@ class Action
      * 
      * @ORM\ManyToOne(targetEntity="Session", inversedBy="actions")
      * @ORM\JoinColumn(name="session_id", referencedColumnName="name")
+     * @Exclude
      */
 	protected $session;
 

@@ -13,16 +13,13 @@ use Doctrine\ORM\EntityManager;
  * repository methods below.
  */
 class SessionRepository extends EntityRepository
-{
-	
-	
-	public function createSession($name, $password){
+{	
+	public function saveSession($session){
 		$em = $this->getEntityManager();
-		$session = new Session();
-		$session->setName($name);
-		$session->setPassword($password);
 		$em->persist($session);
+		$em->flush();
 	}
+	
 	public function exists($name){
 		$qb = $this->createQueryBuilder('s');
 		$query = $qb->where('s.name = :name')

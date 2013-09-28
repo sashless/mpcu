@@ -1,22 +1,25 @@
 {% extends '::base.html.twig' %}
 
-{% block title %} You are the Reciever {% endblock %}
+{% block title %} You are the Sender {% endblock %}
 {% block body %}
-	<h3>You are the Reciever</h3>
+	<h3>You are the Sender</h3>
 	<div id="status"></div>
+	<div id="touchport"></div>
+	<div id="log"></div>
 {% endblock %}
 {% block javascripts %}
 	{{ parent() }}
 	{% javascripts 
 		'@LessMpcuBundle/Resources/public/js/mootools-core-1.4.5-full-compat.js'
+		'@LessMpcuBundle/Resources/public/js/Action.js'
 		'@LessMpcuBundle/Resources/public/js/hammer.js'
-		'@LessMpcuBundle/Resources/public/js/reciever.js'
+		'@LessMpcuBundle/Resources/public/js/Sender.js'
 	 %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 	<script type="text/javascript">
 	window.addEvent('load', function(){
-		reciever.init();
+		Sender.init('{{ ajax_settings }} ');		
 	});
 	</script>
 {% endblock %}

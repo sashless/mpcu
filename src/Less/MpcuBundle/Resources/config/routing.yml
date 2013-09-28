@@ -1,4 +1,4 @@
-less_mpcu_homepage:
+less_mpcu_index:
  pattern: /
  defaults: { _controller: LessMpcuBundle:Default:index }
 less_mpcu_form_create:
@@ -7,9 +7,12 @@ less_mpcu_form_create:
 less_mpcu_form_login:
  pattern: /login
  defaults: { _controller: LessMpcuBundle:Default:login }
-less_mpcu_choose_role:
- pattern: /choose
- defaults: { _controller: LessMpcuBundle:Default:choose }
+less_mpcu_home:
+ pattern: /home
+ defaults: { _controller: LessMpcuBundle:Home:index }
+less_mpcu_home_choose:
+ pattern: /home/choose
+ defaults: { _controller: LessMpcuBundle:Home:choose }
 less_mpcu_ajax_get_next:
  pattern: /ajax/get_next
  defaults: { _controller: LessMpcuBundle:Ajax:getNext }
