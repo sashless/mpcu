@@ -38,6 +38,12 @@ class Session
      */
     private $password;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="createTime", type="integer")
+     */
+    private $createTime;
 
     /**
      * Set name
@@ -116,5 +122,28 @@ class Session
     public function getActions()
     {
         return $this->actions;
+    }
+
+    /**
+     * Set createTime
+     *
+     * @param integer $createTime
+     * @return Session
+     */
+    public function setCreateTime($createTime)
+    {
+        $this->createTime = $createTime;
+    
+        return $this;
+    }
+
+    /**
+     * Get createTime
+     *
+     * @return integer 
+     */
+    public function getCreateTime()
+    {
+        return $this->createTime;
     }
 }

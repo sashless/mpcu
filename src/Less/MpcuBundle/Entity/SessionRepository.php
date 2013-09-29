@@ -15,9 +15,26 @@ use Doctrine\ORM\EntityManager;
 class SessionRepository extends EntityRepository
 {	
 	public function saveSession($session){
+		$now = new \DateTime('now');
+		$session->setTime($now->getTimestamp());
 		$em = $this->getEntityManager();
 		$em->persist($session);
 		$em->flush();
+		//TODO: replace call on saveSession with automatic execution once a day like cron job
+		$this->cleanUp();
+	}
+	/** 
+	 * 	 to remove old user sessions which were older than 2 days
+	 */
+	public function cleanUp(){
+		$past = new \DateTime('now');
+		$past->sub((new \DateInterval('P2D')));
+		
+		$qb = $this->createQueryBuilder('s');
+		$qb->delete('Session')
+			->where('s.createTime < :past')
+			->setParamter('past', $past->getTimestamp())
+			->getQuery()->getResult();
 	}
 	
 	public function exists($name){

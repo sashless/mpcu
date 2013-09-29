@@ -14,7 +14,7 @@ use Less\MpcuBundle\LessMpcuBundle;
 class ActionRepository extends EntityRepository
 {
 	public function saveAction($action){
-		//TODO: get session from user context
+		
 		$em = $this->getEntityManager();
 		$em->persist($action);
 		$em->flush();

@@ -24,7 +24,7 @@ class Action
     private $id;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
      * @ORM\Column(name="time", type="integer")
      */
