@@ -1,8 +1,3 @@
 parameters:
 #    less_mpcu.example.class: Less\MpcuBundle\Example
 
-services:
- less_mpcubundle_session:
-  class: Less\MpcuBundle\Form\SessionType
-  tags:
-   - { name: form.type }

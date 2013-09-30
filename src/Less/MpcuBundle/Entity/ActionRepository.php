@@ -14,8 +14,9 @@ use Less\MpcuBundle\LessMpcuBundle;
 class ActionRepository extends EntityRepository
 {
 	public function saveAction($action){
-		
 		$em = $this->getEntityManager();
+		$now = new \DateTime('now');
+		$action->setTime($now->getTimestamp());
 		$em->persist($action);
 		$em->flush();
 	}
@@ -23,7 +24,7 @@ class ActionRepository extends EntityRepository
 		$qb = $this->createQueryBuilder('a');
 		$query = $qb
 			->where('a.session = :session AND a.time > :last_action_time')
-			->setParameter('session', $session->getName())
+			->setParameter('session', $session->getId())
 			->setParameter('last_action_time', $last_action_time)
 			->orderBy('a.time', 'ASC')
 			->getQuery();

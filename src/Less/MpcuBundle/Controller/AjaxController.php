@@ -6,26 +6,13 @@ use Less\MpcuBundle\Entity\Action;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Less\MpcuBundle\Entity\Session;
+use Less\MpcuBundle\Entity\UserSession;
 use Symfony\Component\HttpFoundation\Response;
 use Less\MpcuBundle\LessMpcuBundle;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class AjaxController extends Controller
 {	
-	private function setupDummySession(){
-		$session = new Session();
-		$session->setName('name');
-		$session->setPassword('test');
-		
-		$session_repo = $this->getDoctrine()->getRepository('Less\MpcuBundle\Entity\Session');
-		if( !$session_repo->exists($session) ){
-			$session_repo->saveSession($session);
-		}else{
-			return $session_repo->find('name');
-		}
-		return $session;
-	}
     public function saveAction(Request $request)
     {	
     	$now = new \DateTime('now');
@@ -33,7 +20,8 @@ class AjaxController extends Controller
     	$action->setTime($now->getTimestamp());
     	$action->setHandling($request->query->get('handling'));
     	$action->setType($request->query->get('type'));
-    	$action->setSession($this->setupDummySession());
+    	 
+    	$action->setSession($this->getUser());
     	
     	$this->getDoctrine()->getRepository('Less\MpcuBundle\Entity\Action')->saveAction($action);
     	
@@ -42,8 +30,10 @@ class AjaxController extends Controller
 
     public function getNextAction(Request $request)
     {
+    	$session = $this->getUser();
+    	
     	$actions = $this->getDoctrine()->getRepository('Less\MpcuBundle\Entity\Action')
-    		->getNextActions($this->setupDummySession(), $request->query->get('time'));
+    		->getNextActions($session, $request->query->get('time'));
     	
     	$status = 'ok';
     	$message = 'ok';

@@ -8,7 +8,7 @@ use Less\MpcuBundle\Entity\Action;
 use Doctrine\Bundle\DoctrineBundle\Command\DropDatabaseDoctrineCommand;
 use Doctrine;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
-use Less\MpcuBundle\Entity\Session;
+use Less\MpcuBundle\Entity\UserSession;
 use Symfony\Component\Translation\Interval;
 
 class ActionRepositoryTest extends WebTestCase{
@@ -31,31 +31,47 @@ class ActionRepositoryTest extends WebTestCase{
 	}
 	public function testAddAction(){
 		$session = $this->createTestSession("test1");
+		$this->assertEquals('test1',$session->getName());
 		
-		$this->action_rep->addAction($session,"type","handling");
+		$action = new Action();
+		$action->setHandling('handling');
+		$action->setSession($session);
+		$action->setType('asdasd');
+		$this->action_rep->saveAction($action);
+		
 		$action = $this->action_rep->findOneBy(array('session'=> $session->getName()));
-		$this->assertEquals(get_class($action),'Less\MpcuBundle\Entity\Action');
+		$this->assertEquals('Less\MpcuBundle\Entity\Action',get_class($action));
 
 	}
 	private function createTestSession($name){
-		$session = new Session();
+		$session = new UserSession();
 		$session->setName($name);
 		$session->setPassword("test");
-		$this->em->persist($session);
-		$this->em->flush();
+		$this->em->getRepository('Less\MpcuBundle\Entity\UserSession')->saveSession($session);
+
 		return $session;
 	}
 	public function testGetNextActions(){
 		$session = $this->createTestSession("test2");
+		$this->assertEquals("test2", $session->getName());
 		
-		$this->action_rep->addAction($session,"type","handling");
-		$this->action_rep->addAction($session,"type","handling");
-		$this->action_rep->addAction($session,"type","handling");
+		$action = new Action();
+		$action->setHandling('handling');
+		$action->setSession($session);
+		$action->setType('asdasd');
+		$this->action_rep->saveAction($action);
+		
+		$action = new Action();
+		$action->setHandling('handling');
+		$action->setSession($session);
+		$action->setType('asdasd');
+		$this->action_rep->saveAction($action);
 		
 		$date = new \DateTime('now');
-		$date->add(new \DateInterval('P10D'));
+		$date->sub(new \DateInterval('P10D'));
+		
 		$actions = $this->action_rep->getNextActions($session, $date->getTimestamp());
-		$this->assertCount(3, $actions );
+		$this->assertCount(2, $actions );
 	}
 	protected function tearDown(){
 		parent::tearDown();

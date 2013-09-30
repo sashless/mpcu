@@ -1,12 +1,12 @@
 <?php
 
-namespace Less\MpcuBundle\Form;
+namespace Less\MpcuBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SessionType extends AbstractType
+class UserSessionType extends AbstractType
 {
         /**
      * @param FormBuilderInterface $builder
@@ -15,7 +15,7 @@ class SessionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
+            ->add('username')
             ->add('password')
         ;
     }
@@ -26,7 +26,7 @@ class SessionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Less\MpcuBundle\Entity\Session'
+            'data_class' => 'Less\MpcuBundle\Entity\UserSession'
         ));
     }
 
@@ -35,6 +35,6 @@ class SessionType extends AbstractType
      */
     public function getName()
     {
-        return 'less_mpcubundle_session';
+        return 'userSession';
     }
 }

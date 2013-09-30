@@ -3,14 +3,20 @@
 
 
 {% block body %}
-	<div id="form_create">
-		<h3>Create a Session</h3>
-		{{ form(form_create) }}
-	</div>
+
 	<div id="form_login">
 		<h3>Login to existing Session</h3>
-		{{ form(form_login) }}
+		<form action="{{ path('less_mpcu_login') }}" method="POST">
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="_username" value="{{ last_username}}" />
+			
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="_password" />
+			
+			<input type="hidden" name="_target_path" value="/home">
+			<button type="submit">Login</button>
 	</div>
+	<div id="error">{{ error }}</div>
 {% endblock %}
 
 {% block javascripts %}

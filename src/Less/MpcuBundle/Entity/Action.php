@@ -47,8 +47,8 @@ class Action
     /**
      * 
      * 
-     * @ORM\ManyToOne(targetEntity="Session", inversedBy="actions")
-     * @ORM\JoinColumn(name="session_id", referencedColumnName="name")
+     * @ORM\ManyToOne(targetEntity="UserSession", inversedBy="actions")
+     * @ORM\JoinColumn(name="session_id", referencedColumnName="id")
      * @Exclude
      */
 	protected $session;
@@ -136,10 +136,10 @@ class Action
     /**
      * Set session
      *
-     * @param \Less\MpcuBundle\Entity\Session $session
+     * @param \Less\MpcuBundle\Entity\UserSession $session
      * @return Action
      */
-    public function setSession(\Less\MpcuBundle\Entity\Session $session)
+    public function setSession(\Less\MpcuBundle\Entity\UserSession $session)
     {
         $this->session = $session;
     
@@ -149,7 +149,7 @@ class Action
     /**
      * Get session
      *
-     * @return \Less\MpcuBundle\Entity\Session 
+     * @return \Less\MpcuBundle\Entity\UserSession 
      */
     public function getSession()
     {

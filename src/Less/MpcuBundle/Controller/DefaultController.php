@@ -2,8 +2,14 @@
 
 namespace Less\MpcuBundle\Controller;
 
+use Less\MpcuBundle\Form\Type\RegistrationType;
+
+use Less\MpcuBundle\Form\Model\Registration;
+
+use Symfony\Component\Security\Core\SecurityContext;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Less\MpcuBundle\Entity\Session;
+use Less\MpcuBundle\Entity\UserSession;
 use Less\MpcuBundle\Form;
 use Less\MpcuBundle\Form\SessionType;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,52 +17,54 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
-    public function indexAction()
-    {	
-    	/*
-    	$form_login = $this->setupFormLogin();
-    	$form_create = $this->setupFormCreate();
-    	
+	
+    public function indexAction(Request $req)
+    {
+    	$session = $req->getSession();
+    	 
+    	if($req->attributes->has(SecurityContext::AUTHENTICATION_ERROR)){
+    		$error = $req->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+    	}else{
+    		$error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
+    		$session->remove(SecurityContext::AUTHENTICATION_ERROR);
+    	}
+    	 
         return $this->render('LessMpcuBundle:Default:index.html.twig', array(
-        	'form_login' => $form_login->createView(),
-        	'form_create' => $form_create->createView()
+        	'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+        	'error' => ''
         ));
-        */
-    	return $this->redirect($this->generateUrl('less_mpcu_home'));
+        
     }
-    private function setupFormCreate(){
-    	return $this->createForm(new SessionType(), new Session(), array(
-    			'action' => $this->generateUrl('less_mpcu_form_create')) )
-    		->add('Create','submit');
-    }
-    private function setupFormLogin(){
-    	return $this->createForm(new SessionType(), new Session(), array(
-    			'action' => $this->generateUrl('less_mpcu_form_login')) )
-    		->add('Login','submit');
+    public function registerAction(){
+    	$registration = new Registration();
+    	$form = $this->createForm(new RegistrationType(), $registration,
+    			array('action' => $this->generateUrl('less_mpcu_register_create')));
+    	return $this->render('LessMpcuBundle:Default:register.html.twig',
+    			array('register_form' => $form->createView()));
+    	
     }
     
     public function createAction(Request $req){
-    	$session_repo = $this->getDoctrine()->getRepository('LessMpcuBundle:Session');
-    	$form_create = $this->setupFormCreate();
-    	$session = $form_create->getData();
-    	$form_create->handleRequest($req);
-    	if($form_create->isValid() && !$session_repo->exists($session) ){
-    		$em = $this->getDoctrine()->getManager();
-    		$em->persist($session);
-    		$em->flush();
+    	$form = $this->createForm(new RegistrationType(), new Registration());
+    	$form->handleRequest($req);
+    	
+    	if($form->isValid()){
+    		$registration = $form->getData();
+    		
+    		$factory = $this->get('security.encoder_factory');
+    		$user = $registration->getUser();
+    		
+    		$encoder = $factory->getEncoder($user);
+    		$password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
+    		$user->setPassword($password);
+    		
+    		$repo = $this->getDoctrine()->getRepository('LessMpcuBundle:UserSession');
+    		$repo->saveSession($user);
+    		
     		return $this->redirect($this->generateUrl('less_mpcu_home'));
     	}
-    	return $this->redirect($this->generateUrl('less_mpcu_index'));
-    }
-    
-    public function loginAction(Request $req){
-    	$form_login = $this->setupFormLogin();
-    	$form_login->handleRequest($req);
-    	if($form_login->isValid()){
-    		// TODO: persist session in user context
-    		$this->getDoctrine()->getManager()->persist($form_create->getData());
-    		return $this->redirect($this->generateUrl('less_mpcu_home'));
-    	}
-    	return $this->redirect($this->generateUrl('less_mpcu_index'));
+    	// TODO: add fail message
+    	return $this->render('LessMpcuBundle:Default:register.html.twig',
+    			array('register_form' => $form->createView()));
     }
 }
