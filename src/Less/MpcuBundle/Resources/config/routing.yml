@@ -12,9 +12,12 @@ less_mpcu_register_create:
 less_mpcu_home:
   pattern: /home
   defaults: { _controller: LessMpcuBundle:Home:index }
-less_mpcu_home_choose:
-  pattern: /home/choose
-  defaults: { _controller: LessMpcuBundle:Home:choose }
+less_mpcu_home_sender:
+  pattern: /home/sender
+  defaults: { _controller: LessMpcuBundle:Home:sender }
+less_mpcu_home_reciever:
+  pattern: /home/reciever
+  defaults: { _controller: LessMpcuBundle:Home:reciever }
 less_mpcu_ajax_get_next:
   pattern: /ajax/get_next
   defaults: { _controller: LessMpcuBundle:Ajax:getNext }
