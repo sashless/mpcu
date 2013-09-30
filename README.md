@@ -1,10 +1,10 @@
 mpcu
 ====
 
-mobile presenation control unit
+mobile presentation control unit
 
-change options in config.php and run MPCU.sql to setup the database.
 
 TODO:
 
-add build system like buildout or grunt etc
+- add build system like buildout or grunt etc
+- add service like youtube to control 
