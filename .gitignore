@@ -17,6 +17,14 @@ vendor/*
 web/uploads/*
 web/bundles/*
 
+#phpstorm
+
+.idea/*
+.iws
+*/.idea/workspace.xml
+*/.idea/tasks.xml
+
+
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
