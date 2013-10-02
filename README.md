@@ -23,4 +23,4 @@ Swipe from left to right or right to left. The Actions are saved within your Use
 - add service like youtube to control, online presentation etc 
 - write more tests
 - TDD for the future dev
-- add csrf to forms
+- add csrf tokens to forms and ajax
