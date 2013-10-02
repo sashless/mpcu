@@ -1,4 +1,4 @@
-# mpcu : mobile presentation control unit
+# mpcu : mobile presentation control unit : alpha 0.1
 
 ### Usage
 
@@ -15,11 +15,12 @@ Open the page on the same or another device again and login with your credential
 
 Choose Sender.
 
-Swipe from left to right or righ to left. The Actions are saved within your UserSession and the Recieving Site will display every action the Sender is doing in real time.
+Swipe from left to right or right to left. The Actions are saved within your UserSession and the Recieving Site will display every action the Sender is doing in real time.
 
 ### Todo
 
-- add build system like buildout or grunt etc
+- add build system like http://capifony.org/
 - add service like youtube to control, online presentation etc 
 - write more tests
 - TDD for the future dev
+- add csrf to forms
