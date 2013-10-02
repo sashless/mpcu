@@ -1,4 +1,4 @@
-# mpcu : mobile presentation control unit : alpha 0.1
+## mpcu : mobile presentation control unit : alpha 0.1
 
 ### Usage
 
