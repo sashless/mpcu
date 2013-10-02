@@ -31,30 +31,36 @@ class ActionRepositoryTest extends WebTestCase{
 	}
 	public function testAddAction(){
 		$session = $this->createTestSession("test1");
-		$this->assertEquals('test1',$session->getName());
-		
+
 		$action = new Action();
 		$action->setHandling('handling');
 		$action->setSession($session);
 		$action->setType('asdasd');
 		$this->action_rep->saveAction($action);
 		
-		$action = $this->action_rep->findOneBy(array('session'=> $session->getName()));
+		$action = $this->action_rep->findOneBy(array('session'=> $session->getId()));
 		$this->assertEquals('Less\MpcuBundle\Entity\Action',get_class($action));
 
 	}
+    public function testAddUserSession(){
+        $session = new UserSession();
+        $session->setUsername("test2");
+        $session->setPassword("test");
+        $this->em->getRepository('Less\MpcuBundle\Entity\UserSession')->saveSession($session);
+        $saved_session = $this->em->getRepository('Less\MpcuBundle\Entity\UserSession')->find($session->getId());
+        $this->assertEquals('test2',$saved_session->getUsername());
+    }
 	private function createTestSession($name){
 		$session = new UserSession();
-		$session->setName($name);
+		$session->setUsername($name);
 		$session->setPassword("test");
 		$this->em->getRepository('Less\MpcuBundle\Entity\UserSession')->saveSession($session);
 
 		return $session;
 	}
 	public function testGetNextActions(){
-		$session = $this->createTestSession("test2");
-		$this->assertEquals("test2", $session->getName());
-		
+		$session = $this->createTestSession("test3");
+
 		$action = new Action();
 		$action->setHandling('handling');
 		$action->setSession($session);

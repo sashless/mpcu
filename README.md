@@ -24,3 +24,5 @@ TODO:
 
 - add build system like buildout or grunt etc
 - add service like youtube to control, online presentation etc 
+- write more tests
+- TDD for the future dev
