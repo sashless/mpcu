@@ -21,14 +21,15 @@ class DefaultController extends Controller
     public function indexAction(Request $req)
     {
     	$session = $req->getSession();
-    	 
+    	
     	if($req->attributes->has(SecurityContext::AUTHENTICATION_ERROR)){
     		$error = $req->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
     	}else{
     		$error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
     		$session->remove(SecurityContext::AUTHENTICATION_ERROR);
     	}
-    	 
+        //TODO: add plausible error messages
+
         return $this->render('LessMpcuBundle:Default:index.html.twig', array(
         	'last_username' => $session->get(SecurityContext::LAST_USERNAME),
         	'error' => ''
@@ -49,8 +50,10 @@ class DefaultController extends Controller
         $form = $this->createForm(new RegistrationType(), new Registration());
     	$form->handleRequest($req);
         $user = $form->getData()->getUser();
+        $exists = $repo->exists($user->getUsername());
+        $isValid = $form->isValid();
 
-    	if($form->isValid() && !$repo->exists($user->getUsername())){
+    	if($isValid && !$exists){
 
     		$factory = $this->get('security.encoder_factory');
 
@@ -62,8 +65,18 @@ class DefaultController extends Controller
     		
     		return $this->redirect($this->generateUrl('less_mpcu_home'));
     	}
+
+        $error = "";
+
+        if(!$isValid){
+            $error .= "The form is not valid.";
+        }
+        if($exists){
+            $error .= "The username you picked is already in use.";
+        }
+
     	// TODO: add fail message
     	return $this->render('LessMpcuBundle:Default:register.html.twig',
-    			array('register_form' => $form->createView()));
+    			array('register_form' => $form->createView(), 'error' => $error));
     }
 }
