@@ -1,8 +1,4 @@
-# mpcu
-
-## mobile presentation control unit
-
-====
+# mpcu : mobile presentation control unit
 
 ### Usage
 
