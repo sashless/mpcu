@@ -21,7 +21,7 @@ class DefaultController extends Controller
     public function indexAction(Request $req)
     {
     	$session = $req->getSession();
-    	
+
     	if($req->attributes->has(SecurityContext::AUTHENTICATION_ERROR)){
     		$error = $req->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
     	}else{
