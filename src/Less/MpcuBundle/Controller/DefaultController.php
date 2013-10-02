@@ -45,20 +45,19 @@ class DefaultController extends Controller
     }
     
     public function createAction(Request $req){
-    	$form = $this->createForm(new RegistrationType(), new Registration());
+        $repo = $this->getDoctrine()->getRepository('LessMpcuBundle:UserSession');
+        $form = $this->createForm(new RegistrationType(), new Registration());
     	$form->handleRequest($req);
-    	
-    	if($form->isValid()){
-    		$registration = $form->getData();
-    		
+        $user = $form->getData()->getUser();
+
+    	if($form->isValid() && !$repo->exists($user->getUsername())){
+
     		$factory = $this->get('security.encoder_factory');
-    		$user = $registration->getUser();
-    		
+
     		$encoder = $factory->getEncoder($user);
     		$password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
     		$user->setPassword($password);
-    		
-    		$repo = $this->getDoctrine()->getRepository('LessMpcuBundle:UserSession');
+
     		$repo->saveSession($user);
     		
     		return $this->redirect($this->generateUrl('less_mpcu_home'));

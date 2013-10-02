@@ -27,19 +27,13 @@ class UserSessionRepository extends EntityRepository
 	 * 	 to remove old user sessions which were older than 2 days
 	 */
 	public function cleanUp(){
-		$past = new \DateTime('now');
-		$past->sub((new \DateInterval('P2D')));
-		
-		$qb = $this->createQueryBuilder('s');
-		$qb->delete()
-			->where('s.createTime < :past')
-			->setParameter('past', $past->getTimestamp())
-			->getQuery()->getResult();
+        //TODO: implement automatic cleanup of old usersession ..
+
 	}
 	
 	public function exists($name){
 		$qb = $this->createQueryBuilder('s');
-		$query = $qb->where('s.name = :name')
+		$query = $qb->where('s.username = :name')
 		->setParameter('name', $name)
 		->getQuery();
 		
