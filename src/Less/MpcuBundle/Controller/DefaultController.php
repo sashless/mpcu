@@ -41,7 +41,7 @@ class DefaultController extends Controller
     	$form = $this->createForm(new RegistrationType(), $registration,
     			array('action' => $this->generateUrl('less_mpcu_register_create')));
     	return $this->render('LessMpcuBundle:Default:register.html.twig',
-    			array('register_form' => $form->createView()));
+    			array('register_form' => $form->createView(), 'error'=> ''));
     	
     }
     

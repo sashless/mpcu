@@ -10,7 +10,7 @@ class RegistrationType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('user', new UserSessionType());
-		$builder->add('submit','submit');
+		$builder->add('register','submit');
 		$builder->add(
 				'terms',
 				'checkbox',
